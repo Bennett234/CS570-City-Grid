@@ -2,29 +2,41 @@ import city.Car;
 import city.City;
 import city.TestCar;
 import processing.core.PApplet;
+import util.CityUtil.Direction;
 
 @SuppressWarnings("WeakerAccess")
 public class Main extends PApplet {
-    private static final int SCREEN_W = 900;
+    private static final int SCREEN_W = 1800;
     private static final int SCREEN_H = 900;
 
     City city;
     Car car;
 
+    boolean update = true;
+
     public void setup() {
-        city = new City(36, 36, 25);
+        city = new City(36 * 2, 36, 25);
         city.generate();
 
-        car = new TestCar(1, 0, City.Direction.Right);
-        city.cars.add(car);
+        for (int i = 0; i < 20; i++) {
+            car = new TestCar(7, 6, Direction.RIGHT);
+            city.cars.add(car);
+        }
 
-        frameRate(8);
+        frameRate(60);
     }
 
     public void draw() {
-        background(0);
-        city.draw(this);
-        city.step();
+        if (update) {
+            background(0);
+            city.update(this);
+//            update = false;
+        }
+    }
+
+    @Override
+    public void keyPressed() {
+        update = true;
     }
 
     public void settings(){
