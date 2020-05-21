@@ -46,13 +46,34 @@ public class Intersection {
         }
     }
 
-    public boolean checkAction(Direction from, Direction to) {
+    public boolean checkAction(Direction from, Direction to, City city) {
         if (!isAvailable(to)) return false;
-        return canDoDuringPhase(state, from, to);
+        return canDoDuringPhase(state, from, to) && !carAtEndpoint(to, city);
     }
 
-    private static boolean canDoDuringPhase(TrafficState state, Direction from, Direction to) {
+    public boolean carAtEndpoint(Direction direction, City city) {
+        switch (direction) {
+            case UP:    return city.isOccupied(x + 1, y - 1);
+            case DOWN:  return city.isOccupied(x, y + 2);
+            case LEFT:  return city.isOccupied(x - 1, y);
+            case RIGHT: return city.isOccupied(x + 2, y + 1);
+        }
+
+        return false;
+    }
+
+    public int numRoads() {
+        int n = availableDirections[0] ? 1 : 0;
+        n += availableDirections[1] ? 1 : 0;
+        n += availableDirections[2] ? 1 : 0;
+        n += availableDirections[3] ? 1 : 0;
+        return n;
+    }
+
+    private boolean canDoDuringPhase(TrafficState state, Direction from, Direction to) {
         assert from != to;
+
+        if (numRoads() == 2) return true;
 
         switch (state) {
             case PHASE_1: switch (from) {

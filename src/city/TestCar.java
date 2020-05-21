@@ -11,37 +11,27 @@ public class TestCar extends Car {
 
     @Override
     public void step(City city) {
-        // System.out.println("BEGIN STEP (" + x + ", " + y + ")");
+        if (city.grid.grid[x][y].isRoad()) { // We are on road
+            Direction moveDir = city.grid.grid[x][y].direction(); // Get direction road is going
 
-        if (city.grid.grid[x][y].isRoad()) {
-            Direction moveDir = city.grid.grid[x][y].direction();
+            followRoad(moveDir, city); // Move along road
 
-            followRoad(moveDir, city);
+            if (city.grid.grid[x][y].isIntersection()) { // If we've just moved to an intersection
+                Intersection intersection = city.grid.getIntersection(x, y); // Get the intersection
 
-            if (city.grid.grid[x][y].isIntersection()) {
-                // System.out.println(" Intersection Detected");
+                move(moveDir.opposite()); // Move back to the road
 
-                Intersection intersection = city.grid.getIntersection(x, y);
+                Direction from = dirFacing.opposite(); // Direction entering intersection from
+                Direction to; // Direction going
 
-                move(moveDir.opposite());
-
-                Direction from = dirFacing.opposite();
-                Direction to;
-
+                // Pick random direction to turn
                 do to = from.randomExcludingThis();
                 while (!intersection.isAvailable(to));
 
-                // System.out.println(" Moving From " + to + " to " + from);
-
+                // Turn on intersection
                 runActionNext(new CrossIntersection(this, intersection, to, from));
-            } else {
-                // System.out.println(" Road Followed (" + moveDir + ")");
             }
-        } else {
-            // System.out.println(" Off Road (" + x + ", " + y + ")");
         }
-
-        // System.out.println("END STEP (" + x + ", " + y + ")");
     }
 
     public void followRoad(Direction roadDirection, City city) {

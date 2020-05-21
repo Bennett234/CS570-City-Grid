@@ -5,7 +5,7 @@ import processing.core.PApplet;
 import java.util.ArrayList;
 
 public class City {
-    private static final int ANIMATION_FRAMES = 5;
+    private static final int ANIMATION_FRAMES = 20;
     private static final int FRAMES_PER_LIGHT_CHANGE = 10;
 
     public CityGrid grid;
@@ -40,6 +40,14 @@ public class City {
     public boolean isOccupied(int x, int y, Car asking) {
         for (Car car : cars) {
             if (car != asking && car.x == x && car.y == y) return true;
+        }
+
+        return false;
+    }
+
+    public boolean isOccupied(int x, int y) {
+        for (Car car : cars) {
+            if (car.x == x && car.y == y) return true;
         }
 
         return false;

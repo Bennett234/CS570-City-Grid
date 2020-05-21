@@ -107,7 +107,13 @@ public class CityGrid {
     public void generate() {
         for (int i = 5; i < w; i += 6) {
             for (int j = 5; j < h; j += 6) {
-                intersections.put(new Point(i, j), new Intersection(i, j));
+                Intersection intersection = new Intersection(i, j);
+
+                for (int k = 0; k < new Random().nextInt(3); k++) {
+                    intersection.nextState();
+                }
+
+                intersections.put(new Point(i, j), intersection);
             }
         }
 
@@ -202,18 +208,26 @@ public class CityGrid {
                 break;
                 
             case ROAD_UP:
+                if (grid[i - 1][j].type != CellType.ROAD) return;
+                if (grid[i - 1][j] == Cell.ROAD_RIGHT) return;
                 applet.fill(255, 255, 0);
                 applet.rect(x, y + h * 0.25f, 2, h * 0.5f);
                 break;
             case ROAD_DOWN:
+                if (grid[i + 1][j].type != CellType.ROAD) return;
+                if (grid[i + 1][j] == Cell.ROAD_LEFT) return;
                 applet.fill(255, 255, 0);
                 applet.rect(x + w - 2, y + h * 0.25f, 2, h * 0.5f);
                 break;
             case ROAD_LEFT:
+                if (grid[i][j + 1].type != CellType.ROAD) return;
+                if (grid[i][j + 1] == Cell.ROAD_UP) return;
                 applet.fill(255, 255, 0);
                 applet.rect(x + w * 0.25f, y + h - 2, w * 0.5f, 2);
                 break;
             case ROAD_RIGHT:
+                if (grid[i][j - 1].type != CellType.ROAD) return;
+                if (grid[i][j - 1] == Cell.ROAD_DOWN) return;
                 applet.fill(255, 255, 0);
                 applet.rect(x + w * 0.25f, y, w * 0.5f, 2);
                 break;
@@ -226,6 +240,8 @@ public class CityGrid {
 
         if (state) applet.fill(0, 255, 0);
         else applet.fill(255, 0, 0);
+
+        if (intersection.numRoads() == 2) applet.fill(0, 255, 0);
 
         switch (dir) {
             case UP:    applet.rect(x + 2,         y,         w - 4, 2);     break;
@@ -266,17 +282,17 @@ public class CityGrid {
     public boolean genEdgeCell(int x, int y, Cell BLDG) {
         if (x == 0) {
             genCellTemplate(x, y, new Cell[][]{
-                    { EPTY, SDWK, SDWK, SDWK, SDWK, I_BL },
+                    { EPTY, EPTY, EPTY, EPTY, SDWK, I_BL },
 
-                    { EPTY, SDWK, SDWK, SDWK, SDWK, RD_D },
+                    { EPTY, EPTY, EPTY, EPTY, SDWK, RD_D },
 
-                    { EPTY, SDWK, BLDG, BLDG, SDWK, RD_D },
+                    { EPTY, EPTY, EPTY, EPTY, SDWK, RD_D },
 
-                    { EPTY, SDWK, BLDG, BLDG, SDWK, RD_D },
+                    { EPTY, EPTY, EPTY, EPTY, SDWK, RD_D },
 
-                    { EPTY, SDWK, SDWK, SDWK, SDWK, RD_D },
+                    { EPTY, EPTY, EPTY, EPTY, SDWK, RD_D },
 
-                    { EPTY, SDWK, SDWK, SDWK, SDWK, I_TL }
+                    { EPTY, EPTY, EPTY, EPTY, SDWK, I_TL }
             });
 
             getIntersection(x + 5, y - 1).setAvailable(Direction.LEFT, false);
@@ -284,17 +300,17 @@ public class CityGrid {
         }
         else if (x + 6 >= w) {
             genCellTemplate(x, y, new Cell[][]{
-                    { I_BR, SDWK, SDWK, SDWK, SDWK, EPTY },
+                    { I_BR, SDWK, EPTY, EPTY, EPTY, EPTY },
 
-                    { RD_U, SDWK, SDWK, SDWK, SDWK, EPTY },
+                    { RD_U, SDWK, EPTY, EPTY, EPTY, EPTY },
 
-                    { RD_U, SDWK, BLDG, BLDG, SDWK, EPTY },
+                    { RD_U, SDWK, EPTY, EPTY, EPTY, EPTY },
 
-                    { RD_U, SDWK, BLDG, BLDG, SDWK, EPTY },
+                    { RD_U, SDWK, EPTY, EPTY, EPTY, EPTY },
 
-                    { RD_U, SDWK, SDWK, SDWK, SDWK, EPTY },
+                    { RD_U, SDWK, EPTY, EPTY, EPTY, EPTY },
 
-                    { I_TR, SDWK, SDWK, SDWK, SDWK, EPTY }
+                    { I_TR, SDWK, EPTY, EPTY, EPTY, EPTY }
             });
 
             getIntersection(x - 1, y - 1).setAvailable(Direction.RIGHT, false);
@@ -304,11 +320,11 @@ public class CityGrid {
             genCellTemplate(x, y, new Cell[][]{
                     { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                    { SDWK, SDWK, SDWK, SDWK, SDWK, SDWK },
+                    { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                    { SDWK, SDWK, BLDG, BLDG, SDWK, SDWK },
+                    { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                    { SDWK, SDWK, BLDG, BLDG, SDWK, SDWK },
+                    { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
                     { SDWK, SDWK, SDWK, SDWK, SDWK, SDWK },
 
@@ -324,11 +340,11 @@ public class CityGrid {
 
                     { SDWK, SDWK, SDWK, SDWK, SDWK, SDWK },
 
-                    { SDWK, SDWK, BLDG, BLDG, SDWK, SDWK },
+                    { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                    { SDWK, SDWK, BLDG, BLDG, SDWK, SDWK },
+                    { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                    { SDWK, SDWK, SDWK, SDWK, SDWK, SDWK },
+                    { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
                     { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY }
             });
@@ -346,60 +362,60 @@ public class CityGrid {
 
                 { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                { EPTY, SDWK, SDWK, SDWK, SDWK, SDWK },
+                { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                { EPTY, SDWK, BLDG, BLDG, SDWK, SDWK },
+                { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                { EPTY, SDWK, BLDG, BLDG, SDWK, SDWK },
+                { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                { EPTY, SDWK, SDWK, SDWK, SDWK, SDWK },
+                { EPTY, EPTY, EPTY, EPTY, SDWK, SDWK },
 
-                { EPTY, SDWK, SDWK, SDWK, SDWK, I_TL }
+                { EPTY, EPTY, EPTY, EPTY, SDWK, I_TL }
         });
         else if (x + 6 >= w && y == 0) genCellTemplate(x, y, new Cell[][]{
                 /* Top Right */
 
                 { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                { SDWK, SDWK, SDWK, SDWK, SDWK, EPTY },
+                { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                { SDWK, SDWK, BLDG, BLDG, SDWK, EPTY },
+                { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                { SDWK, SDWK, BLDG, BLDG, SDWK, EPTY },
+                { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                { SDWK, SDWK, SDWK, SDWK, SDWK, EPTY },
+                { SDWK, SDWK, EPTY, EPTY, EPTY, EPTY },
 
-                { I_TR, SDWK, SDWK, SDWK, SDWK, EPTY }
+                { I_TR, SDWK, EPTY, EPTY, EPTY, EPTY }
         });
         else if (x == 0 && y + 6 >= h) genCellTemplate(x, y, new Cell[][]{
                 /* Bottom Left */
 
-                { EPTY, SDWK, SDWK, SDWK, SDWK, I_BL },
+                { EPTY, EPTY, EPTY, EPTY, SDWK, I_BL },
 
-                { EPTY, SDWK, SDWK, SDWK, SDWK, SDWK },
+                { EPTY, EPTY, EPTY, EPTY, SDWK, SDWK },
 
-                { EPTY, SDWK, BLDG, BLDG, SDWK, SDWK },
+                { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                { EPTY, SDWK, BLDG, BLDG, SDWK, SDWK },
+                { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                { EPTY, SDWK, SDWK, SDWK, SDWK, SDWK },
+                { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
                 { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY }
         });
         else if (x + 6 >= w && y + 6 >= h) genCellTemplate(x, y, new Cell[][]{
                 /* Bottom Right */
 
-                { I_BR, SDWK, SDWK, SDWK, SDWK, EPTY },
+                { I_BR, SDWK, EPTY, EPTY, EPTY, EPTY },
 
-                { SDWK, SDWK, SDWK, SDWK, SDWK, EPTY },
+                { SDWK, SDWK, EPTY, EPTY, EPTY, EPTY },
 
-                { SDWK, SDWK, BLDG, BLDG, SDWK, EPTY },
+                { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                { SDWK, SDWK, BLDG, BLDG, SDWK, EPTY },
+                { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                { SDWK, SDWK, SDWK, SDWK, SDWK, EPTY },
+                { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY },
 
-                { I_TR, RD_L, RD_L, RD_L, RD_L, EPTY }
+                { EPTY, EPTY, EPTY, EPTY, EPTY, EPTY }
         });
         else return false;
         return true;

@@ -32,7 +32,57 @@ public class CrossIntersection extends Action {
     @Override
     public boolean run(City city) {
         if (crossing) {
-            switch (from) {
+            if (intersection.numRoads() == 2) switch (from) {
+                case UP: switch (to) {
+                    case LEFT: switch (crossingStep) {
+                        case 0: car.x = intersection.x; car.y = intersection.y; car.dirFacing = Direction.LEFT; break;
+                        case 1: car.x--; return true;
+                    } break;
+                    case RIGHT: switch (crossingStep) {
+                        case 0: car.x = intersection.x; car.y = intersection.y; car.dirFacing = Direction.DOWN; break;
+                        case 1: car.y++; break;
+                        case 2: car.x++; car.dirFacing = Direction.RIGHT; break;
+                        case 3: car.x++; return true;
+                    } break;
+                } break;
+                case DOWN: switch (to) {
+                    case RIGHT: switch (crossingStep) {
+                        case 0: car.x = intersection.x + 1; car.y = intersection.y + 1; car.dirFacing = Direction.RIGHT; break;
+                        case 1: car.x++; return true;
+                    } break;
+                    case LEFT: switch (crossingStep) {
+                        case 0: car.x = intersection.x + 1; car.y = intersection.y + 1; car.dirFacing = Direction.UP; break;
+                        case 1: car.y--; break;
+                        case 2: car.x--; car.dirFacing = Direction.LEFT; break;
+                        case 3: car.x--; return true;
+                    } break;
+                } break;
+                case LEFT: switch (to) {
+                    case DOWN: switch (crossingStep) {
+                        case 0: car.x = intersection.x; car.y = intersection.y + 1; car.dirFacing = Direction.DOWN; break;
+                        case 1: car.y++; return true;
+                    } break;
+                    case UP: switch (crossingStep) {
+                        case 0: car.x = intersection.x; car.y = intersection.y + 1; car.dirFacing = Direction.RIGHT; break;
+                        case 1: car.x++; break;
+                        case 2: car.y--; car.dirFacing = Direction.UP; break;
+                        case 3: car.y--; return true;
+                    } break;
+                } break;
+                case RIGHT: switch (to) {
+                    case UP: switch (crossingStep) {
+                        case 0: car.x = intersection.x + 1; car.y = intersection.y; car.dirFacing = Direction.UP; break;
+                        case 1: car.y--; return true;
+                    } break;
+                    case DOWN: switch (crossingStep) {
+                        case 0: car.x = intersection.x + 1; car.y = intersection.y; car.dirFacing = Direction.LEFT; break;
+                        case 1: car.x--; break;
+                        case 2: car.y++; car.dirFacing = Direction.DOWN; break;
+                        case 3: car.y++; return true;
+                    } break;
+                } break;
+            }
+            else switch (from) {
                 case UP: switch (to) {
                     case DOWN: switch (crossingStep) {
                         case 0: car.x = intersection.x; car.y = intersection.y; car.dirFacing = Direction.DOWN; break;
@@ -101,7 +151,7 @@ public class CrossIntersection extends Action {
 
             crossingStep++;
         } else {
-            crossing = intersection.checkAction(from, to);
+            crossing = intersection.checkAction(from, to, city);
         }
 
         return false;
