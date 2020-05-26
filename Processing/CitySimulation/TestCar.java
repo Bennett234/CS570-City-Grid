@@ -59,25 +59,6 @@ public class TestCar extends Car {
     public void drawCar(PApplet applet, float x, float y, float w, float h) {
         applet.fill(0, 255, 255);
         applet.rect(x, y, w, h);
-
-//        switch (dirFacing) {
-//            case UP:
-//                applet.fill(255, 0, 255);
-//                applet.rect(x, y, w, h);
-//                break;
-//            case DOWN:
-//                applet.fill(0, 255, 0);
-//                applet.rect(x, y, w, h);
-//                break;
-//            case LEFT:
-//                applet.fill(0, 0, 255);
-//                applet.rect(x, y, w, h);
-//                break;
-//            case RIGHT:
-//                applet.fill(0, 255, 255);
-//                applet.rect(x, y, w, h);
-//                break;
-//        }
     }
 
     public void followRoad(Direction roadDirection, City city) {
